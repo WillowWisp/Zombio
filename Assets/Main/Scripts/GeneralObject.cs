@@ -11,6 +11,7 @@ public class GeneralObject : MonoBehaviour {
 
     [Header("Movement")]
     public float speed = 10;
+    public float rotateSpeed = 10;          //Angle/s
 
     [Header("Effect")]
     public List<Transform> explosionList;
