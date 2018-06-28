@@ -10,7 +10,8 @@ public class GeneralObject : MonoBehaviour {
     public float damage = 0;
 
     [Header("Movement")]
-    public float speed = 10;
+    public float baseSpeed = 10;
+	protected float curSpeed;
     public float rotateSpeed = 10;          //Angle/s
 
     [Header("Effect")]
@@ -23,26 +24,47 @@ public class GeneralObject : MonoBehaviour {
     
     protected virtual void Awake()
     {
-        curHealth = maxHealth;
+		//Get Component
         rigidBody = GetComponent<Rigidbody>();
+		//Get collector
+		vfxCollector = GameObject.Find("VFX_Collector").GetComponent<Collector>();
 
-        //Get collector
-        vfxCollector = GameObject.Find("VFX_Collector").GetComponent<Collector>();
+		//Intial stats
+		curHealth = maxHealth;
+		curSpeed = baseSpeed;
     }
     protected virtual void Update()
     {
     }
 
-    //Action
-    public void ChangeCurHealth(float value)
+	//HP affects
+	public void ChangeCurHealth(float value)
+	{
+		curHealth += value;
+		CheckHealth();
+	}
+	public virtual void CheckHealth()
+	{
+		if (maxHealth <= 0)
+		{
+			return;
+		}
+		if (curHealth <= 0)
+		{
+			Die();
+		}
+	}
+
+	//Action
+	public virtual void Move(Vector3 direction, Space relativeTo = Space.Self)
     {
-        curHealth += value;
-        CheckHealth();
+        transform.Translate(direction * curSpeed * Time.deltaTime, relativeTo);
     }
-    public virtual void Move(Vector3 direction)
-    {
-        transform.Translate(direction * speed * Time.deltaTime);
-    }
+	public virtual void RotateToDirection(Vector3 moveDirection)
+	{
+		Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+		transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotateSpeed);
+	}
     public virtual void Die()
     {
         //Create explosion
@@ -53,14 +75,12 @@ public class GeneralObject : MonoBehaviour {
 
         Destroy(gameObject);
     }
-    public virtual void CheckHealth()
-    {
-        if (maxHealth <= 0) {
-            return;
-        }
-        if (curHealth <= 0) {
-            Die();
-        }
-    }
-    public virtual void Attack() { }
+
+	//Misc
+	public virtual void ChangeStat(ref float valueToChange, float newValue, bool constraint) {
+		if (constraint == true)
+		{
+			valueToChange = newValue;
+		}
+	}
 }

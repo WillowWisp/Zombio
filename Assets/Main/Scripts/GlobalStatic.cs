@@ -8,4 +8,5 @@ public class GlobalStatic {
     {
         return GameObject.FindGameObjectWithTag("Player").transform;
     }
+	
 }
