@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : GeneralObject {
-	bool isAiming = false;
-	bool isMoving = false;
+
+    [Header("Status")]
+    public float maxAngleDifference = 120;
+    private bool isAiming = false;
+	private bool isMoving = false;
 
 	private void FixedUpdate()
 	{
@@ -26,13 +29,18 @@ public class Player : GeneralObject {
 
 		Vector3 moveDirection = GetMoveDirection(moveSide, moveForward);
 
-
 		//Rotate
 		RotateFaceDirection(moveDirection);
 
+		//Checking angles
+		//Reduce speed if moving backward
+		ChangeStat(ref curSpeed, baseSpeed / 4.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
+
 		//Move
-		Move(moveDirection, Space.World);
-	}
+		Move(moveDirection);
+
+
+    }
 
 	//Misc
 	Vector3 GetMoveDirection(float moveSide, float moveForward)
@@ -58,19 +66,29 @@ public class Player : GeneralObject {
 				RotateToDirection(moveDirection);
 			}
 		}
-		else
+		else //When holding Right mouse button
 		{
-			Vector3 mouseLocation = Input.mousePosition;
-			Vector3 playerToMousePos2D = mouseLocation - Camera.main.WorldToScreenPoint(transform.position);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-			Vector3 faceDirection = new Vector3(playerToMousePos2D.x, 0, playerToMousePos2D.y);
+            Physics.Raycast(ray, out hit, LayerMask.GetMask("Ground"));
 
-			RotateToDirection(faceDirection);
+            Vector3 _faceDirection = hit.point - transform.position;
+			_faceDirection.y = 0;
 
-			float differenceAngle = Vector3.Angle(moveDirection, transform.forward);
+			//Vector3 mouseLocation = Input.mousePosition;
+			//Vector3 playerToMousePos2D = mouseLocation - Camera.main.WorldToScreenPoint(transform.position);
+
+			//Vector3 faceDirection = new Vector3(playerToMousePos2D.x, 0, playerToMousePos2D.y);
+
+			RotateToDirection(_faceDirection);
+
 			
-			//Reduce speed if moving backward
-			ChangeStat(ref curSpeed, baseSpeed / 4.0f, differenceAngle >= 120);
 		}
 	}
+
+    public float DifferenceAngle(Vector3 moveDirection)
+    {
+        return Vector3.Angle(moveDirection, transform.forward);
+    }
 }	

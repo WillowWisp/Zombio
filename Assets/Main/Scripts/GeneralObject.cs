@@ -56,9 +56,12 @@ public class GeneralObject : MonoBehaviour {
 	}
 
 	//Action
-	public virtual void Move(Vector3 direction, Space relativeTo = Space.Self)
+	public virtual void Move(Vector3 direction)
     {
-        transform.Translate(direction * curSpeed * Time.deltaTime, relativeTo);
+		Vector3 newSpeed = direction * curSpeed;
+		newSpeed.y = rigidBody.velocity.y;
+		rigidBody.velocity = newSpeed;
+
     }
 	public virtual void RotateToDirection(Vector3 moveDirection)
 	{
@@ -80,6 +83,7 @@ public class GeneralObject : MonoBehaviour {
 	public virtual void ChangeStat(ref float valueToChange, float newValue, bool constraint) {
 		if (constraint == true)
 		{
+			Debug.Log(newValue + " " + valueToChange);
 			valueToChange = newValue;
 		}
 	}
