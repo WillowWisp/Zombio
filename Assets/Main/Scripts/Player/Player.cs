@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class Player : GeneralObject {
 
-    [Header("Status")]
-    public float maxAngleDifference = 120;
-    private bool isAiming = false;
+	[Header("Status")]
+	public float maxAngleDifference = 120;
 	private bool isMoving = false;
 
+	[Header("Weapon thingy")]
+	public List<Weapon> weaponList;
+	private Weapon curWeapon;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		curWeapon = weaponList[0];
+	}
 	private void FixedUpdate()
 	{
 		//Reset speed
@@ -34,15 +42,40 @@ public class Player : GeneralObject {
 
 		//Checking angles
 		//Reduce speed if moving backward
-		ChangeStat(ref curSpeed, baseSpeed / 4.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
+		ChangeStat(ref curSpeed, baseSpeed / 2.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
 
 		//Move
 		Move(moveDirection);
-
-
     }
+	private void Update()
+	{
+		//Shoot
+		if (Input.GetButton("Fire1") == true)
+		{
+			curWeapon.UseWeapon();
+		}
+		//if (Input.GetButtonDown("Next Weapon") == true)
+		//{
+		//	ChangeWeapon();
+		//}
+		//ToDO: Change tool
+		if (Input.GetButtonDown("Reload") == true)
+		{
+			curWeapon.Reload();
+		}
+	}
 
-	//Misc
+	#region Action
+	public void ChangeWeapon()
+	{
+		//Add animation and icon
+		int indx = weaponList.IndexOf(curWeapon);
+		indx = indx >= weaponList.Count ? 0 : indx++;
+		curWeapon = weaponList[indx];
+	}
+	#endregion
+
+	#region Misc
 	Vector3 GetMoveDirection(float moveSide, float moveForward)
 	{
 		//Input must be relative to camera rotation
@@ -50,13 +83,10 @@ public class Player : GeneralObject {
 		Vector3 cameraForward = cameraParent.forward;
 		Vector3 cameraRight = cameraParent.right;
 
-		Vector3 moveDirection = new Vector3();
-
 		Vector3 moveX = cameraRight * moveSide;
 		Vector3 moveZ = cameraForward * moveForward;
-		return moveDirection = moveX + moveZ;
+		return moveX + moveZ;
 	}
-
 	void RotateFaceDirection(Vector3 moveDirection)
 	{
 		if (Input.GetMouseButton(1) == false)
@@ -86,9 +116,9 @@ public class Player : GeneralObject {
 			
 		}
 	}
-
     public float DifferenceAngle(Vector3 moveDirection)
     {
         return Vector3.Angle(moveDirection, transform.forward);
     }
+	#endregion
 }	

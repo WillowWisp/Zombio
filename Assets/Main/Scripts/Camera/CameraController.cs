@@ -9,7 +9,6 @@ public class CameraController : MonoBehaviour {
     private Vector3 initialOffset;
 
 	[Header("Rotation")]
-	private bool isRotating = false;
 	public float rotationSpeed = 100;//100deg/sec
 	private float targetRotation = 0;
 

@@ -6,12 +6,12 @@ public class GeneralObject : MonoBehaviour {
 
     [Header("Stats")]
     public float maxHealth = 0;
-    private float curHealth;
+    protected float curHealth;
     public float damage = 0;
 
     [Header("Movement")]
     public float baseSpeed = 10;
-	protected float curSpeed;
+	[HideInInspector] public float curSpeed;
     public float rotateSpeed = 10;          //Angle/s
 
     [Header("Effect")]
@@ -32,9 +32,6 @@ public class GeneralObject : MonoBehaviour {
 		//Intial stats
 		curHealth = maxHealth;
 		curSpeed = baseSpeed;
-    }
-    protected virtual void Update()
-    {
     }
 
 	//HP affects
@@ -85,6 +82,14 @@ public class GeneralObject : MonoBehaviour {
 		{
 			Debug.Log(newValue + " " + valueToChange);
 			valueToChange = newValue;
+		}
+	}
+	public void ChangeTag(string newTag)
+	{
+		tag = newTag;
+		foreach (Transform child in transform)
+		{
+			tag = newTag;
 		}
 	}
 }
