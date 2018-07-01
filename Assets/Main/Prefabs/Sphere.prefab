@@ -112,13 +112,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2301bea9b70568f46b77b3ef533f2a10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 1
+  maxHealth: 0
+  curHealth: 0
   damage: 0
   baseSpeed: 0
   curSpeed: 0
   rotateSpeed: 0
   explosionList: []
-  range: 100
+  range: 0
   myIcon: {fileID: 0}
 --- !u!135 &135922982702720618
 SphereCollider:

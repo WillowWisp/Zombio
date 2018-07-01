@@ -9,9 +9,10 @@ public class RangeWeapon : Weapon {
 	{
 		[Header("Bullet info")]
 		public float damage = 10;
-		public float speed = 10;        //Nên dùng speed hay dùng force?
+		public float speed = 10;        
 		public bool useGravity = false;
 		public float range = 10;
+		public float maxPenetration = 1;	//How many object can it go through?	--- Same as health
 		public GameObject bulletPrefab;
 
 		[Header("Ammo Type")]
@@ -41,10 +42,8 @@ public class RangeWeapon : Weapon {
 
 	#region Action
 	public virtual void ShootBullet()
-	{
-		Debug.Log("Tới đây rồi nè!");
-		
-		//TODO: làm gì đó...
+	{		
+		//Subtracting the ammo
 		curBulletType.curAmmoLeft--;
 		Vector3 shotVector = firePoint.position - transform.position;
 
@@ -56,11 +55,12 @@ public class RangeWeapon : Weapon {
 		shotBullet.damage = curBulletType.damage;
 		shotBullet.range = curBulletType.range;
 		shotBullet.GetComponent<Rigidbody>().useGravity = curBulletType.useGravity;
+		shotBullet.maxHealth = curBulletType.maxPenetration;
+		shotBullet.curHealth = curBulletType.maxPenetration;
 		shotBullet.ChangeTag(tag);
 
 		//Adopting
 		bulletCollector.AddChild(shotBullet.transform);
-		Debug.Log("ShotVector: " + shotVector);
 		//Launch the bullet
 		shotBullet.Move(shotVector);
 	}

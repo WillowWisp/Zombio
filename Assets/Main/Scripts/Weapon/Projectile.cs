@@ -68,7 +68,6 @@ public class Projectile : GeneralObject {
 		}
 		else
 		{
-			Debug.Log("trigger");
 			Die();  //Va chạm với tường chẳng hạn
 		}
 	}

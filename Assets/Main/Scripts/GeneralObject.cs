@@ -6,13 +6,14 @@ public class GeneralObject : MonoBehaviour {
 
     [Header("Stats")]
     public float maxHealth = 0;
-    protected float curHealth;
+    [HideInInspector] public float curHealth;
     public float damage = 0;
 
     [Header("Movement")]
     public float baseSpeed = 10;
 	[HideInInspector] public float curSpeed;
     public float rotateSpeed = 10;          //Angle/s
+	protected Animator anim;
 
     [Header("Effect")]
     public List<Transform> explosionList;
@@ -26,10 +27,11 @@ public class GeneralObject : MonoBehaviour {
     {
 		//Get Component
         rigidBody = GetComponent<Rigidbody>();
+		anim = GetComponent<Animator>();
 		//Get collector
 		vfxCollector = GameObject.Find("VFX_Collector").GetComponent<Collector>();
 
-		//Intial stats
+		//Initial stats
 		curHealth = maxHealth;
 		curSpeed = baseSpeed;
     }
@@ -37,7 +39,7 @@ public class GeneralObject : MonoBehaviour {
 	//HP affects
 	public void ChangeCurHealth(float value)
 	{
-		curHealth += value;
+		curHealth = Mathf.Min(curHealth + value, maxHealth);
 		CheckHealth();
 	}
 	public virtual void CheckHealth()
@@ -55,7 +57,7 @@ public class GeneralObject : MonoBehaviour {
 	//Action
 	public virtual void Move(Vector3 direction)
     {
-		Vector3 newSpeed = direction * curSpeed;
+		Vector3 newSpeed = direction.normalized * curSpeed;
 		newSpeed.y = rigidBody.velocity.y;
 		rigidBody.velocity = newSpeed;
 
@@ -78,9 +80,7 @@ public class GeneralObject : MonoBehaviour {
 
 	//Misc
 	public virtual void ChangeStat(ref float valueToChange, float newValue, bool constraint) {
-		if (constraint == true)
-		{
-			Debug.Log(newValue + " " + valueToChange);
+		if (constraint == true) { 
 			valueToChange = newValue;
 		}
 	}

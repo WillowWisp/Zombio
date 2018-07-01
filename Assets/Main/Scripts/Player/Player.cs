@@ -22,10 +22,15 @@ public class Player : GeneralObject {
 		//Reset speed
 		curSpeed = baseSpeed;
 
+		//Check if running
+		bool isRunning = Input.GetButton("Run");
+		Debug.Log("TODO: Only run when there is stamina");
+		ChangeStat(ref curSpeed, baseSpeed * 2, isRunning);	
+		
 		//Get input
 		float moveSide = Input.GetAxis("Horizontal");
 		float moveForward = Input.GetAxis("Vertical");
-
+		
 		if (moveSide != 0 || moveForward != 0)
 		{
 			isMoving = true;
@@ -42,10 +47,13 @@ public class Player : GeneralObject {
 
 		//Checking angles
 		//Reduce speed if moving backward
-		ChangeStat(ref curSpeed, baseSpeed / 2.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
+		ChangeStat(ref curSpeed, curSpeed / 2.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
 
 		//Move
 		Move(moveDirection);
+
+		anim.SetFloat("moveSpeed", rigidBody.velocity.magnitude);
+		anim.SetBool("isRunning", isRunning);
     }
 	private void Update()
 	{
