@@ -28,8 +28,8 @@ public class Player : GeneralObject {
 		ChangeStat(ref curSpeed, baseSpeed * 2, isRunning);	
 		
 		//Get input
-		float moveSide = Input.GetAxis("Horizontal");
-		float moveForward = Input.GetAxis("Vertical");
+		float moveSide = Input.GetAxisRaw("Horizontal");
+		float moveForward = Input.GetAxisRaw("Vertical");
 		
 		if (moveSide != 0 || moveForward != 0)
 		{
@@ -49,12 +49,16 @@ public class Player : GeneralObject {
 		//Reduce speed if moving backward
 		ChangeStat(ref curSpeed, curSpeed / 2.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
 
+		Debug.Log(rigidBody.velocity);
+
 		//Move
 		Move(moveDirection);
 
+		//anim.SetFloat("horizontal",moveSide * GlobalStatic.Mapping(curSpeed, 0, baseSpeed, 0, 1));
+		//anim.SetFloat("vertical", moveForward * GlobalStatic.Mapping(curSpeed, 0, baseSpeed, 0, 1));
 		anim.SetFloat("moveSpeed", rigidBody.velocity.magnitude);
 		anim.SetBool("isRunning", isRunning);
-    }
+	}
 	private void Update()
 	{
 		//Shoot
@@ -70,6 +74,11 @@ public class Player : GeneralObject {
 		if (Input.GetButtonDown("Reload") == true)
 		{
 			curWeapon.Reload();
+		}
+		//Interact
+		if (Input.GetMouseButtonDown(1))
+		{
+			InteractWithObject();
 		}
 	}
 
@@ -124,9 +133,32 @@ public class Player : GeneralObject {
 			
 		}
 	}
+
     public float DifferenceAngle(Vector3 moveDirection)
     {
         return Vector3.Angle(moveDirection, transform.forward);
     }
 	#endregion
-}	
+
+	void InteractWithObject()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+
+		Physics.Raycast(ray, out hit);
+
+		Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+		if (interactable != null)
+		{
+			float distance = (transform.position - interactable.transform.position).magnitude;
+			if (distance > interactable.radius)
+				Debug.Log("Out of range!!");
+			else
+			{
+				interactable.Interact();
+			}
+		}
+	}
+	
+}
