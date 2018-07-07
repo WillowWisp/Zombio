@@ -9,13 +9,19 @@ public class Player : GeneralObject {
 	private bool isMoving = false;
 
 	[Header("Weapon thingy")]
-	public List<Weapon> weaponList;
-	private Weapon curWeapon;
+	public List<Weapon> toolBelt;
+	public Weapon curWeapon;
+
+	[Header("Thumb")]
+	[SerializeField] private Transform weaponPoint;
 
 	protected override void Awake()
 	{
 		base.Awake();
-		curWeapon = weaponList[0];
+		if (toolBelt.Count > 0)
+		{
+			curWeapon = toolBelt[0];
+		}
 	}
 	private void FixedUpdate()
 	{
@@ -49,8 +55,6 @@ public class Player : GeneralObject {
 		//Reduce speed if moving backward
 		ChangeStat(ref curSpeed, curSpeed / 2.0f, DifferenceAngle(moveDirection) >= maxAngleDifference);
 
-		Debug.Log(rigidBody.velocity);
-
 		//Move
 		Move(moveDirection);
 
@@ -62,16 +66,16 @@ public class Player : GeneralObject {
 	private void Update()
 	{
 		//Shoot
-		if (Input.GetButton("Fire1") == true)
+		if (Input.GetButton("Fire1") == true && curWeapon != null)
 		{
 			curWeapon.UseWeapon();
 		}
-		//if (Input.GetButtonDown("Next Weapon") == true)
-		//{
-		//	ChangeWeapon();
-		//}
+		if (Input.GetButtonDown("Next Weapon") == true && toolBelt.Count > 0)
+		{
+			ChangeWeapon();
+		}
 		//ToDO: Change tool
-		if (Input.GetButtonDown("Reload") == true)
+		if (Input.GetButtonDown("Reload") == true && curWeapon != null)
 		{
 			curWeapon.Reload();
 		}
@@ -85,10 +89,17 @@ public class Player : GeneralObject {
 	#region Action
 	public void ChangeWeapon()
 	{
+		Debug.Log("Co bam ne!");
+		Debug.Log("Count : " + toolBelt.Count);
 		//Add animation and icon
-		int indx = weaponList.IndexOf(curWeapon);
-		indx = indx >= weaponList.Count ? 0 : indx++;
-		curWeapon = weaponList[indx];
+		int indx = toolBelt.IndexOf(curWeapon);
+		Debug.Log(indx);
+		indx = indx >= toolBelt.Count - 1? 0 : indx + 1;
+		curWeapon.gameObject.SetActive(false);			//Set inactive -----		TODO: Change model!
+		curWeapon = toolBelt[indx];
+		curWeapon.gameObject.SetActive(true);           //Set active ------			TODO: Change model!
+		Debug.Log("SAU : " + indx);
+		curWeapon.StopWeapon();
 	}
 	#endregion
 
@@ -160,5 +171,21 @@ public class Player : GeneralObject {
 			}
 		}
 	}
-	
+	public void AddWeapon(Weapon newWeapon)
+	{
+		newWeapon.transform.parent = weaponPoint;      //Set parent		
+		newWeapon.transform.localPosition = Vector3.zero;
+		newWeapon.transform.rotation = transform.rotation;
+
+		toolBelt.Add(newWeapon);
+
+		if (curWeapon != null)
+		{
+			newWeapon.gameObject.SetActive(false);
+		}
+		else
+		{
+			curWeapon = newWeapon;
+		}
+	}
 }

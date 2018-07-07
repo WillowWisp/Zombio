@@ -9,4 +9,6 @@ public class Weapon : MonoBehaviour {
 	public virtual void UseWeapon() { }
 
 	public virtual void Reload() { }
+
+	public virtual void StopWeapon() { }
 }

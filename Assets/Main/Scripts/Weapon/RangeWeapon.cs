@@ -70,6 +70,15 @@ public class RangeWeapon : Weapon {
 		yield return new WaitForSeconds(1 / curBulletType.fireRate);
 		shooting = null;
 	}
+	public override void StopWeapon()
+	{
+		if (shooting == null)
+		{
+			return;
+		}
+		StopCoroutine(shooting);
+		shooting = null;
+	}
 	public override void UseWeapon()
 	{
 		if (shooting != null)
