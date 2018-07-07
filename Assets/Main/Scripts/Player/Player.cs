@@ -89,8 +89,6 @@ public class Player : GeneralObject {
 	#region Action
 	public void ChangeWeapon()
 	{
-		Debug.Log("Co bam ne!");
-		Debug.Log("Count : " + toolBelt.Count);
 		//Add animation and icon
 		int indx = toolBelt.IndexOf(curWeapon);
 		Debug.Log(indx);
@@ -98,7 +96,6 @@ public class Player : GeneralObject {
 		curWeapon.gameObject.SetActive(false);			//Set inactive -----		TODO: Change model!
 		curWeapon = toolBelt[indx];
 		curWeapon.gameObject.SetActive(true);           //Set active ------			TODO: Change model!
-		Debug.Log("SAU : " + indx);
 		curWeapon.StopWeapon();
 	}
 	#endregion

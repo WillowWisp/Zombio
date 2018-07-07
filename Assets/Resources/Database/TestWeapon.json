@@ -1,0 +1,27 @@
+[
+  {
+    "damage": 1,
+    "speed": 150,
+    "useGravity": false,
+    "range": 50,
+    "maxPenetration": 1,
+
+    "totalAmmoLeft": 400,
+    "magazineSize": 200,
+    "curAmmoLeft": 100,
+    "fireRate": 20
+  },
+  {
+    "damage": 5,
+    "speed": 50,
+    "useGravity": false,
+    "range": 50,
+    "maxPenetration": 1,
+
+    "totalAmmoLeft": 20,
+    "magazineSize": 10,
+    "curAmmoLeft": 5,
+    "fireRate": 5
+  }
+
+]

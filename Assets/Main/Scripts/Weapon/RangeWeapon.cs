@@ -20,7 +20,27 @@ public class RangeWeapon : Weapon {
 		public int magazineSize = 0;
 		public int curAmmoLeft = 0;		//Ammo left in the magazine
 		//public int maxAmmo = 0;
-		public float fireRate = 1;		//Bullet/s	=> f = 1/fireRate =]]		
+		public float fireRate = 1;      //Bullet/s	=> f = 1/fireRate =]]	
+
+		[Newtonsoft.Json.JsonConstructor]
+		BulletInfo(float _damage, float _speed, bool _useGravity,
+		float _range, float _maxPenetration, int _totalAmmoLeft,
+		int _magazineSize, int _curAmmoLeft, float _fireRate
+		)
+		{
+			damage = _damage;
+			speed = _speed;
+			useGravity = _useGravity;
+			range = _range;
+			maxPenetration = _maxPenetration;
+
+			totalAmmoLeft = _totalAmmoLeft;
+			magazineSize = _magazineSize;
+			curAmmoLeft = _curAmmoLeft;
+
+			fireRate = _fireRate;
+
+		}
 	}
 
 	[Header("Bullet Type")]
